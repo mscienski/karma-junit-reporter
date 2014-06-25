@@ -10,7 +10,8 @@ var JUnitReporter = function(baseReporterDecorator, config, logger, helper, form
   var pkgName = reporterConfig.suite || '';
   var outputFile = helper.normalizeWinPath(path.resolve(config.basePath, reporterConfig.outputFile
       || 'test-results.xml'));
-
+  var xsl = helper.normalizeWinPath(path.resolve(config.basePath, reporterConfig.xsl
+      || ''));
   var xml;
   var suites;
   var pendingFileWritings = 0;
@@ -33,7 +34,7 @@ var JUnitReporter = function(baseReporterDecorator, config, logger, helper, form
 
   this.onRunStart = function(browsers) {
     suites = Object.create(null);
-    xml = builder.create('testsuites');
+    xml = builder.create('testsuites',{'version': '1.0', 'encoding': 'UTF-8'},{'xsl':xsl});
 
     // TODO(vojta): remove once we don't care about Karma 0.10
     browsers.forEach(initliazeXmlForBrowser);
@@ -48,7 +49,7 @@ var JUnitReporter = function(baseReporterDecorator, config, logger, helper, form
 
     if (!suite) {
       // This browser did not signal `onBrowserStart`. That happens
-      // if the browser timed out during the start phase.
+      // if the browser timed out duging the start phase.
       return;
     }
 
